@@ -1,20 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Firebase Registration</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8">
+<title>Game Auth</title>
+<style>
+body { font-family: Arial; max-width: 400px; margin: auto; padding: 20px; }
+input { width: 100%; padding: 8px; margin: 5px 0; }
+button { padding: 10px; width: 100%; margin-top: 10px; }
+#stats { border: 1px solid #ccc; padding: 10px; margin-top: 20px; }
+.hidden { display: none; }
+</style>
 </head>
 <body>
-  <div class="container">
-    <h2>Register</h2>
-    <input type="email" id="email" placeholder="Email" />
-    <input type="password" id="password" placeholder="Password" />
-    <button id="registerBtn">Register</button>
-    <p id="message"></p>
-  </div>
 
-  <script type="module" src="script.js"></script>
+<h2>Sign Up</h2>
+<input id="reg_email" placeholder="Email">
+<input id="reg_pass" type="password" placeholder="Password">
+<input id="reg_name" placeholder="Username">
+<button onclick="register()">Sign Up</button>
+
+<h2>Sign In</h2>
+<input id="log_email" placeholder="Email">
+<input id="log_pass" type="password" placeholder="Password">
+<button onclick="login()">Sign In</button>
+
+<div id="stats" class="hidden">
+  <h3>Your Statistics</h3>
+  <p><b>Username:</b> <span id="stat_name"></span></p>
+  <p><b>Kills:</b> <span id="stat_kills"></span></p>
+  <p><b>Deaths:</b> <span id="stat_deaths"></span></p>
+  <a href="launcher.zip" download><button>Download Game Launcher</button></a>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+
+// 🔹 YOUR FIREBASE CONFIG
+const firebaseConfig = {
+  apiKey: "AIzaSyCG2qEzBgb9mhyWAykO6OApPSyOlkLHAH8",
+  authDomain: "neardyrush.firebaseapp.com",
+  databaseURL: "https://neardyrush-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "neardyrush",
+  storageBucket: "neardyrush.firebasestorage.app",
+  messagingSenderId: "130401101856",
+  appId: "1:130401101856:web:577aaa770dd08d38deb445",
+  measurementId: "G-22CGSBLNK4"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+async function register() {
+  const email = document.getElementById("reg_email").value.trim();
+  const pass = document.getElementById("reg_pass").value.trim();
+  const name = document.getElementById("reg_name").value.trim();
+
+  if (!email || !pass || !name) return alert("Please fill in all fields");
+
+  // Check if username is unique
+  const snapshot = await get(ref(db, "Players"));
+  if (snapshot.exists()) {
+    for (let uid in snapshot.val()) {
+      if (snapshot.val()[uid].username === name) {
+        return alert("Username is already taken!");
+      }
+    }
+  }
+
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+    await set(ref(db, "Players/" + userCredential.user.uid), {
+      username: name,
+      total_kills: 0,
+      total_deaths: 0
+    });
+    alert("Registration successful!");
+  } catch (error) {
+    alert(error.message);
+  }
+}
+
+async function login() {
+  const email = document.getElementById("log_email").value.trim();
+  const pass = document.getElementById("log_pass").value.trim();
+
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+    const uid = userCredential.user.uid;
+    const playerSnap = await get(ref(db, "Players/" + uid));
+    if (playerSnap.exists()) {
+      document.getElementById("stat_name").textContent = playerSnap.val().username;
+      document.getElementById("stat_kills").textContent = playerSnap.val().total_kills;
+      document.getElementById("stat_deaths").textContent = playerSnap.val().total_deaths;
+      document.getElementById("stats").classList.remove("hidden");
+    } else {
+      alert("Player data not found!");
+    }
+  } catch (error) {
+    alert(error.message);
+  }
+}
+</script>
 </body>
 </html>
