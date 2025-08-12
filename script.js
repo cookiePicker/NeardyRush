@@ -31,7 +31,7 @@ document.getElementById("registerBtn").addEventListener("click", () => {
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       sendEmailVerification(userCredential.user).then(() => {
-        message.textContent = "Verification email sent. Please check your inbox.";
+        message.textContent = "Verification email sent. Please check your inbox. if you can't see verification email, please check your spam";
       });
     })
     .catch((error) => {
