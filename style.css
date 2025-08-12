@@ -1,40 +1,80 @@
-body {
-  font-family: Arial, sans-serif;
-  display: flex;
-  height: 100vh;
-  justify-content: center;
-  align-items: center;
-  background: #f5f5f5;
+/* Сброс базовых отступов */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
+/* Общие настройки */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Контейнер */
 .container {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 320px;
+}
+
+/* Заголовки */
+h1, h2 {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* Формы */
+form {
+    display: flex;
+    flex-direction: column;
 }
 
 input {
-  display: block;
-  width: 250px;
-  margin: 10px 0;
-  padding: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
 }
 
 button {
-  padding: 8px;
-  width: 100%;
-  background: #4CAF50;
-  color: white;
-  border: none;
-  cursor: pointer;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
 button:hover {
-  background: #45a049;
+    background-color: #45a049;
 }
 
-#message {
-  margin-top: 10px;
-  color: #333;
+/* Статистика */
+.stats {
+    margin-top: 20px;
+    background: #f0f0f0;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+.download-btn {
+    display: block;
+    margin-top: 15px;
+    text-align: center;
+    padding: 10px;
+    background-color: #2196F3;
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+.download-btn:hover {
+    background-color: #1976D2;
 }
